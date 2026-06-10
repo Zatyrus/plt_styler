@@ -2,7 +2,7 @@
 import json
 import os
 import matplotlib.pyplot as plt
-from typing import Dict, Any, NoReturn, Union
+from typing import Dict, Any, List, NoReturn, Union
 
 
 class PltStyler:
@@ -56,6 +56,16 @@ class PltStyler:
     def make_color_axis(
         self, data: Any, cmap: str = "viridis", normalize: bool = True
     ) -> plt.Axes:
+        """Create a color axis for a colorbar based on the provided data and colormap. The color axis can be normalized based on the minimum and maximum values of the data.
+
+        Args:
+            data (Any): Iterable data for which the color axis will be created. This can be a list, numpy array, pandas Series, etc.
+            cmap (str, optional): The colormap to use. Defaults to "viridis".
+            normalize (bool, optional): Whether to normalize the color axis based on the data's minimum and maximum values. Defaults to True.
+
+        Returns:
+            plt.Axes: The color axis for the colorbar.
+        """
         norm = plt.Normalize(vmin=data.min(), vmax=data.max()) if normalize else None
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
@@ -68,13 +78,37 @@ class PltStyler:
         label: str = "Colorbar",
         fontsize: int = 12,
         fontweight: str = "bold",
-    ) -> None:
+    ) -> plt.colorbar:
+        """Create a matplotlib colorbar object based on the provided data and colormap, and set the label with the specified font properties.
+
+        Args:
+            data (Any): Iterable data for which the colorbar will be created. This can be a list, numpy array, pandas Series, etc.
+            cmap (str, optional): The colormap to use. Defaults to "viridis".
+            label (str, optional): The label for the colorbar. Defaults to "Colorbar".
+            fontsize (int, optional): The font size for the colorbar label. Defaults to 12.
+            fontweight (str, optional): The font weight for the colorbar label. Defaults to "bold".
+
+        Returns:
+            plt.colorbar: The created colorbar object.
+        """
         cbar = plt.colorbar(self.make_color_axis(data, cmap=cmap))
         cbar.set_label(label, fontsize=fontsize, fontweight=fontweight)
         return cbar
 
     # %% Default parameters for different plot types
     def get_default_parameters(self, plot_type: str) -> Dict[str, Any]:
+        """Return the default parameters for a given plot type by loading them from a JSON file in the default_parameters directory.
+        The JSON file should be named after the plot type (e.g., lineplot.json for "lineplot") and contain a dictionary of default parameters.
+
+        Args:
+            plot_type (str): The type of plot for which to retrieve default parameters.
+
+        Raises:
+            ValueError: If no default parameters are found for the specified plot type.
+
+        Returns:
+            Dict[str, Any]: The default parameters for the specified plot type.
+        """
         default_parameters_dir = os.path.join(
             os.path.dirname(__file__), "default_parameters"
         )
@@ -93,19 +127,39 @@ class PltStyler:
 
     # %% Stylesheet management methods
     def reset_style(self) -> NoReturn:
+        """Reset the matplotlib style to the default settings.
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         plt.style.use("default")
 
     def reset_font(self) -> NoReturn:
+        """Reset the matplotlib font settings to the default values (family: DejaVu Sans, weight: bold, size: 12).
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         plt.rc("font", family="DejaVu Sans", weight="bold", size=12)
 
-    def check_available_stylesheets(self) -> list:
+    def check_available_stylesheets(self) -> List[str]:
+        """Retrieve a list of available stylesheets by checking the stylesheets directory for JSON files and returning their names without the .json extension.
+
+        Returns:
+            List[str]: A list of available stylesheet names.
+        """
         stylesheets_dir = os.path.join(os.path.dirname(__file__), "stylesheets")
         available_stylesheets = [
             f[:-5] for f in os.listdir(stylesheets_dir) if f.endswith(".json")
         ]
         return available_stylesheets
 
-    def check_available_default_parameters(self) -> list:
+    def check_available_default_parameters(self) -> List[str]:
+        """Check the available default parameters by looking for JSON files in the default_parameters directory and returning their names without the .json extension.
+
+        Returns:
+            List[str]: A list of available default parameter names.
+        """
         default_parameters_dir = os.path.join(
             os.path.dirname(__file__), "default_parameters"
         )
@@ -115,9 +169,14 @@ class PltStyler:
         return available_default_parameters
 
     def reset_stylesheet(self) -> NoReturn:
+        """Reset the stylesheet to the default settings by loading the default stylesheet from the stylesheets directory and applying it to matplotlib.
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         # load the default stylesheet from the stylesheets directory
         with open(
-            os.path.join(os.path.dirname(__file__), "stylesheets/matplotlib.json"),
+            os.path.join(os.path.dirname(__file__), "stylesheets/default.json"),
             "r",
         ) as f:
             self.stylesheet = json.load(f)
@@ -130,6 +189,16 @@ class PltStyler:
     def set_font(
         self, family: str = "DejaVu Sans", weight: str = "bold", size: int = 12
     ) -> "PltStyler":
+        """Set the font properties in the stylesheet to the specified values for family, weight, and size. This method updates the font settings in the stylesheet dictionary and returns the PltStyler instance for method chaining.
+
+        Args:
+            family (str, optional): The font family. Defaults to "DejaVu Sans".
+            weight (str, optional): The font weight. Defaults to "bold".
+            size (int, optional): The font size. Defaults to 12.
+
+        Returns:
+            PltStyler: The PltStyler instance for method chaining.
+        """
         self.stylesheet["font"]["family"] = family
         self.stylesheet["font"]["weight"] = weight
         self.stylesheet["font"]["size"] = size
@@ -137,11 +206,30 @@ class PltStyler:
         return self
 
     def set_style(self, style: str) -> "PltStyler":
+        """Set the matplotlib style in the stylesheet to the specified style name. This method updates the style setting in the stylesheet dictionary and returns the PltStyler instance for method chaining.
+
+        Args:
+            style (str): The matplotlib style name.
+
+        Returns:
+            PltStyler: The PltStyler instance for method chaining.
+        """
         self.stylesheet["style"] = style
 
         return self
 
     def set_stylesheet(self, stylesheet: Union[str, Dict[str, Any]]) -> "PltStyler":
+        """Set the stylesheet for the PltStyler instance by loading it from a specified source.
+
+        Args:
+            stylesheet (Union[str, Dict[str, Any]]): The stylesheet to load. This can be a string representing the name of a predefined stylesheet (e.g., "dark", "bright") or a path to a custom JSON file containing the stylesheet settings, or it can be a dictionary with the stylesheet settings.
+
+        Raises:
+            ValueError: If the provided stylesheet is not a valid string or dictionary.
+
+        Returns:
+            PltStyler: The PltStyler instance with the updated stylesheet for method chaining.
+        """
         # check if the provided stylesheet is a string (path to JSON file) or a dictionary, and load it accordingly
         if isinstance(stylesheet, str):
             if stylesheet in self.available_stylesheets:
@@ -174,12 +262,27 @@ class PltStyler:
         return self
 
     def apply_style(self) -> NoReturn:
+        """Apply the style settings from the stylesheet to matplotlib by using plt.style.use with the style specified in the stylesheet dictionary.
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         plt.style.use(self.stylesheet["style"])
 
     def apply_font(self) -> NoReturn:
+        """Apply the font settings from the stylesheet to matplotlib by using plt.rc with the font properties specified in the stylesheet dictionary.
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         plt.rc("font", **self.stylesheet["font"])
 
     def apply_stylesheet(self) -> NoReturn:
+        """Apply the entire stylesheet to matplotlib by enforcing both the style and font settings from the stylesheet dictionary.
+
+        Returns:
+            NoReturn: This method does not return anything.
+        """
         # reset to default to avoid compounding styles when calling this method multiple times
         self.reset_style()
         self.reset_font()
