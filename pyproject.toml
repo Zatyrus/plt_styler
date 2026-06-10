@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PltStyler"
-version = "0.0.2"
+version = "0.0.3"
 description = "A collection of stylesheets and default values for Python matplotlib figures."
 authors = ["Bela Vogler <bela.vogler@uni-jena.de>"]
 license = "GPL-3"
