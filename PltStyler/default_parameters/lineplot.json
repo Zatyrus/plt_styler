@@ -1,0 +1,10 @@
+{
+    "color": "black",
+    "linewidth": 2,
+    "linestyle": "-",
+    "marker": null,
+    "markersize": 6,
+    "markerfacecolor": "blue",
+    "markeredgecolor": "black",
+    "markeredgewidth": 1
+}

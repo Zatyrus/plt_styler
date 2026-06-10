@@ -1,0 +1,37 @@
+{
+    "widths": 0.5,
+    "patch_artist": true,
+    "boxprops": 
+        {
+            "facecolor": "lightblue",
+            "color": "black", "lw": 2
+        },
+    "medianprops":
+        {
+            "color": "black",
+            "lw": 1.5
+        },
+    "meanprops": 
+        {
+            "color": "red",
+            "zorder": 3, 
+            "marker": "D",
+            "ms": 10
+        },
+    "whiskerprops": 
+        {
+            "color": "black", 
+            "lw": 2
+        },
+    "capprops": 
+        {
+            "color": "black",
+            "lw": 2
+        },
+    "showfliers": false,
+    "showbox": true,
+    "showcaps": true,
+    "showmeans": true,
+    "notch": false,
+    "zorder": 0
+}

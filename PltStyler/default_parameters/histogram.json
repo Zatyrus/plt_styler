@@ -1,0 +1,7 @@
+{
+    "alpha": 1.0, 
+    "edgecolor": "black", 
+    "color": "lightblue", 
+    "bins": 30,  
+    "zorder": 0
+}
