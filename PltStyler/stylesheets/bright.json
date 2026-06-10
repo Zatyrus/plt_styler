@@ -1,0 +1,8 @@
+{
+    "style": "seaborn-v0_8-bright",
+    "font": {
+        "family": "DejaVu Sans",
+        "weight": "bold",
+        "size": 16
+    }
+}
