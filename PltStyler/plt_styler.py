@@ -183,7 +183,7 @@ class PltStyler:
             np.ndarray: An RGB array representing the input data colored according to the specified colormap.
         """
         rgba_array = self.make_RGBA(data, cmap=cmap, normalize=normalize)
-        return rgba_array[:, :, :3]  # Extract RGB channels, ignore alpha
+        return rgba_array[:, :3]  # Extract RGB channels, ignore alpha
 
     # %% Default parameters for different plot types
     def get_default_parameters(self, plot_type: str) -> Dict[str, Any]:
