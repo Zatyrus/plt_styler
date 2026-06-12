@@ -53,10 +53,10 @@ class PltStyler:
                 print("No stylesheet provided, using default settings.")
 
     # %% Colorbar styling method
-    def make_color_axis(
+    def make_scalar_mappable(
         self, data: Any, cmap: str = "viridis", normalize: bool = True
-    ) -> plt.Axes:
-        """Create a color axis for a colorbar based on the provided data and colormap. The color axis can be normalized based on the minimum and maximum values of the data.
+    ) -> plt.cm.ScalarMappable:
+        """Create a scalar mappable for a colorbar based on the provided data and colormap. The scalar mappable can be normalized based on the minimum and maximum values of the data.
 
         Args:
             data (Any): Iterable data for which the color axis will be created. This can be a list, numpy array, pandas Series, etc.
@@ -64,7 +64,7 @@ class PltStyler:
             normalize (bool, optional): Whether to normalize the color axis based on the data's minimum and maximum values. Defaults to True.
 
         Returns:
-            plt.Axes: The color axis for the colorbar.
+            plt.cm.ScalarMappable: The scalar mappable for the colorbar.
         """
         norm = plt.Normalize(vmin=data.min(), vmax=data.max()) if normalize else None
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
@@ -74,6 +74,7 @@ class PltStyler:
     def make_colorbar(
         self,
         data: Any,
+        ax: plt.Axes,
         cmap: str = "viridis",
         label: str = "Colorbar",
         fontsize: int = 12,
@@ -91,9 +92,55 @@ class PltStyler:
         Returns:
             plt.colorbar: The created colorbar object.
         """
-        cbar = plt.colorbar(self.make_color_axis(data, cmap=cmap))
+        cbar = plt.colorbar(self.make_scalar_mappable(data, cmap=cmap), ax=ax)
         cbar.set_label(label, fontsize=fontsize, fontweight=fontweight)
         return cbar
+
+    def make_color_and_colorbar(
+        self,
+        data: Any,
+        ax: plt.Axes,
+        cmap: str = "viridis",
+        label: str = "Colorbar",
+        fontsize: int = 12,
+        fontweight: str = "bold",
+    ) -> tuple[plt.cm.ScalarMappable, plt.colorbar]:
+        """Create a scalar mappable and a colorbar object based on the provided data and colormap.
+
+        Args:
+            data (Any): Iterable data for which the colorbar will be created.
+            ax (plt.Axes): The axes on which to place the colorbar.
+            cmap (str, optional): The colormap to use. Defaults to "viridis".
+            label (str, optional): The label for the colorbar. Defaults to "Colorbar".
+            fontsize (int, optional): The font size for the colorbar label. Defaults to 12.
+            fontweight (str, optional): The font weight for the colorbar label. Defaults to "bold".
+
+        Returns:
+            tuple[plt.cm.ScalarMappable, plt.colorbar]: The created scalar mappable and colorbar objects.
+        """
+        sm = self.make_scalar_mappable(data, cmap=cmap)
+        cbar = self.make_colorbar(
+            data, ax, cmap=cmap, label=label, fontsize=fontsize, fontweight=fontweight
+        )
+        return sm, cbar
+
+    def make_RGB_array(
+        self, data: Any, cmap: str = "viridis", normalize: bool = True
+    ) -> Any:
+        """Convert the provided data into an RGB array based on the specified colormap and normalization.
+
+        Args:
+            data (Any): Iterable data to be converted into an RGB array. This can be a list, numpy array, pandas Series, etc.
+            cmap (str, optional): The colormap to use for the conversion. Defaults to "viridis".
+            normalize (bool, optional): Whether to normalize the data based on its minimum and maximum values before applying the colormap. Defaults to True.
+
+        Returns:
+            Any: An RGB array representing the input data colored according to the specified colormap.
+        """
+        norm = plt.Normalize(vmin=data.min(), vmax=data.max()) if normalize else None
+        cmap_func = plt.cm.get_cmap(cmap)
+        rgb_array = cmap_func(norm(data)) if norm else cmap_func(data)
+        return rgb_array
 
     # %% Default parameters for different plot types
     def get_default_parameters(self, plot_type: str) -> Dict[str, Any]:
