@@ -308,24 +308,8 @@ class PltStyler:
 
         return self
 
-    def apply_style(self) -> NoReturn:
-        """Apply the style settings from the stylesheet to matplotlib by using plt.style.use with the style specified in the stylesheet dictionary.
-
-        Returns:
-            NoReturn: This method does not return anything.
-        """
-        plt.style.use(self.stylesheet["style"])
-
-    def apply_font(self) -> NoReturn:
-        """Apply the font settings from the stylesheet to matplotlib by using plt.rc with the font properties specified in the stylesheet dictionary.
-
-        Returns:
-            NoReturn: This method does not return anything.
-        """
-        plt.rc("font", **self.stylesheet["font"])
-
-    def apply_stylesheet(self) -> NoReturn:
-        """Apply the entire stylesheet to matplotlib by enforcing both the style and font settings from the stylesheet dictionary.
+    def apply(self) -> NoReturn:
+        """Apply the stylesheet (style and font settings) to matplotlib by enforcing both the style and font settings from the stylesheet dictionary.
 
         Returns:
             NoReturn: This method does not return anything.
